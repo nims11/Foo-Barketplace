@@ -1,0 +1,23 @@
+{% extends "admin_panel_base.html" %}
+
+{% block title %}Add Admin | {{ app_name }}{% endblock %}
+{% block heading %}Add Admin{% endblock %}
+
+{% block main_content %}
+{% if msg %}
+    <p style="color: blue;">
+        {{ msg }}
+    </p>
+{% endif %}
+{% if form.errors %}
+    <p style="color: red;">
+        Please correct the error{{ form.errors|pluralize }} below.
+    </p>
+{% endif %}
+<form action="" method="post">
+    <table>
+        {{ form.as_table }}
+        <tr><td><input type="submit" value="Submit"></td></tr>
+    </table>
+</form>
+{% endblock %}

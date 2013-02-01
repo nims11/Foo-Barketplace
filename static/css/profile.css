@@ -1,0 +1,28 @@
+#wrapper {
+	width: 100%;
+	margin: 0 auto;
+}
+#left-div {
+	width: 20%;
+	float: left;
+	height: 100px;
+}
+#right-div {
+	width: 80%;
+}
+
+#dash_chi{
+	margin-left: auto;
+	margin-right: auto;
+}
+#dash_chi td{
+	padding: 10px 40px 10px 10px;
+}
+#form_wrapper th{
+	text-align: left;
+	padding-right: 10px;
+}
+#content{
+	margin-left: auto;
+	margin-right: auto;
+}

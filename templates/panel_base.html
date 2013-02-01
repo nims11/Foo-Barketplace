@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | {{ app_name }}{% endblock %}
+
+{% block head %}
+<link href='/static/css/profile.css' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block content %}
+<div id='wrapper'>
+	<div id='left-div'>
+		<ul>
+		{% block link_area %}
+			{% for link, disp in links %}
+			<li><a href="{{ link }}">{{ disp }}</a></li>
+			{% endfor %}
+		{% endblock %}
+		</ul>
+	</div>
+	<div id='right-div'>
+		<h1>{% block heading %}{% endblock %}</h1>
+		<div id='content'>
+			{% block profile_content %}{% endblock %}
+		</div>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+{% endblock %}

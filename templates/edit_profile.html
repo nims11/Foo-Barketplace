@@ -1,0 +1,29 @@
+{% extends "panel_base.html" %}
+
+{% block title %}Edit Profile | {{ app_name }}{% endblock %}
+{% block heading %}Edit Profile{% endblock %}
+
+{% block profile_content %}
+	{% if saved %}
+	<p style="color: blue;">
+		Changes Saved.
+	</p>
+	{% endif %}
+	{% if form.errors %}
+	    <p style="color: red;">
+	        Please correct the error{{ form.errors|pluralize }} below.
+	    </p>
+	{% endif %}
+
+	<form action="" method="post">
+	    <table id='form_wrapper'>
+	        {{ form.as_table }}
+	        <tr colspan=2><td><input type="submit" value="Submit"></td></tr>
+	    </table>
+	</form>
+	<p>
+		<a href='/myprofile/delete/'>
+			Delete Your Account
+		</a>
+	</p>
+{% endblock %}

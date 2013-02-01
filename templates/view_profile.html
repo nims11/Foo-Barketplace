@@ -1,0 +1,28 @@
+{% extends "panel_base.html" %}
+
+{% block title %}{{ curr_user.user_obj.nick }}'s Profile | {{ app_name }}{% endblock %}
+{% block heading %}{{ target_user.user_obj.nick }}'s Profile{% endblock %}
+
+{% block link_area %}
+	{% if user_reg and user_reg.is_admin and target_user.user_obj.nick %}
+	{% if target_user.user_obj.is_active %}
+		<li style='color: red;'><a href='/admin/user/deact/{{ target_user.user_obj.nick }}/'>Deactivate</a></li>
+	{% else %}
+		<li style='color: red;'><a href='/admin/user/act/{{ target_user.user_obj.nick }}/'>Activate</a></li>
+	{% endif %}
+	{% endif %}
+		{% for link, disp in links %}
+		<li><a href="{{ link }}">{{ disp }}</a></li>
+		{% endfor %}
+{% endblock %}
+
+{% block profile_content %}
+<table id='dash_chi'>
+	{% for key, val in user_info %}
+	<tr>
+		<td>{{ key }}</td>
+		<td>{{ val }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "panel_base.html" %}
+
+{% block title %}My Profile | {{ app_name }}{% endblock %}
+{% block heading %}My Profile{% endblock %}
+
+{% block profile_content %}
+<table id='dash_chi'>
+	{% for key, val in user_info %}
+	<tr>
+		<td>{{ key }}</td>
+		<td>{{ val }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

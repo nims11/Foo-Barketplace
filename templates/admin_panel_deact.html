@@ -1,0 +1,25 @@
+{% extends "admin_panel_base.html" %}
+
+{% block title %}Deactivated Users | {{ app_name }}{% endblock %}
+{% block heading %}Deactivated Users{% endblock %}
+
+{% block main_content %}
+    {% if not size %}
+        <p style='color: red;'>No Deactivated users found</p>
+    {% else %}
+    <table style='margin-left: auto;margin-right: auto;'>
+        <tr>
+            <th>Nick</th>
+            <th>Email</th>
+            <th>Activate</th>
+        </tr>
+        {% for user_obj in list %}
+        <tr>
+            <td style='padding-right:30px;'>{{ user_obj.nick }}</td>
+            <td>{{ user_obj.email }}</td>
+            <td style='padding-left:30px;'><a href='/admin/user/act/{{ user_obj.nick }}/'>&gt;&gt;</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+{% endblock %}

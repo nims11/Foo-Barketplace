@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<link href='/static/css/base.css' rel='stylesheet' type='text/css'>
+	{% block head %}{% endblock %}
+</head>
+<body>
+<div id='viewarea'>
+	<div id='userarea'>
+		{% if user_nick %}
+		Welcome {{ user_nick }}! (<a href='/myprofile/'>My Profile</a> |{% if user_reg.is_admin %} <a href='/admin/'>Admin Panel</a> |{% endif %} <a href='{{ app_logout_URL }}'>Sign Out</a> {% if not user_reg.is_active %} | <font style='color: red'> Your account is currently disabled, visit 'My Profile' for furthur details</font>{% endif %})
+		{% else %}
+		<a href='{{ app_login_URL }}'>Sign In</a>
+		{% endif %}
+
+	</div>
+	<div id='logoarea'>
+		<h1>{{ app_name }}</h1>
+		<div class='cleardiv'></div>
+		<h3>{{ app_tagline }}</h3>
+		<div class='cleardiv'></div>
+	</div>
+	<div id='navbar'>
+		<nav id='topnav'>
+			<a href='/'>Home</a> |
+			<a href='/browse'>Browse</a> |
+			<a href='/sell'>Sell</a> |
+			<a href='/feedback'>Feedback</a>
+		</nav>
+		<form name='Search' id='searcharea'>
+			<input type='text' placeholder='Enter Item To Search' />
+		</form>
+		<div class='cleardiv'></div>
+	</div>
+	<hr />
+	<br />
+	{% block content %}
+	{% endblock %}
+</div>
+</body>
+</html>

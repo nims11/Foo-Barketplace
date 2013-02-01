@@ -1,0 +1,17 @@
+#dash_par{
+	width: 100%;
+}
+#dash_par td{
+	padding: 0px 0px 0px 0px;
+}
+#dash_par tr{
+	width: 100%;
+}
+#dash_par table{
+	margin-left: auto;
+	margin-right: auto;
+}
+#dash_par table th{
+	text-align: left;
+	padding-right: 10px;
+}
