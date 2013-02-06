@@ -56,7 +56,7 @@ def del_profile(request, curr_user):
 		else:
 			return HttpResponseRedirect('/')
 	else:
-		return render(request, 'delete.html', {'form': DelForm()})
+		return render(request, 'user_delete.html', {'form': DelForm()})
 
 @handle_login_register
 def deact_profile(request, nick, curr_user):

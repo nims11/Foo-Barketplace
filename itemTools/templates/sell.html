@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Sell | {{ app_name }}{% endblock %}
+
+{% block head %}
+<link href='/static/css/sell.css' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block content %}
+
+<h1>Sell Item</h1>
+{% if form.errors %}
+    <p style="color: red;">
+        Please correct the error{{ form.errors|pluralize }} below.
+    </p>
+{% endif %}
+<form action="" method="post">
+    <table>
+        {{ form.as_table }}
+        <tr><td><input type="submit" value="Submit"></td></tr>
+    </table>
+</form>
+{% endblock %}

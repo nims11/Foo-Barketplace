@@ -1,0 +1,23 @@
+#wrapper {
+	width: 100%;
+	margin: 0 auto;
+}
+#left-div {
+	width: 20%;
+	float: left;
+	height: 100px;
+}
+#right-div {
+	width: 80%;
+}
+#item_table{
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+#item_table td{
+	padding: 5px;
+}
+#item_table th{
+	text-align: left;
+}

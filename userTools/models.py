@@ -13,5 +13,8 @@ class user_profile(models.Model):
 	def __unicode__(self):
 		return self.nick
 
+	def get_url(self):
+		return '/user/%s/' % self.nick
+
 class admins(models.Model):
 	email = models.EmailField(editable=False, unique=True)

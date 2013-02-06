@@ -3,7 +3,7 @@ from google.appengine.api import users
 from django.shortcuts import render
 from forms import NickForm
 
-myprofile_links = [('/myprofile/', 'My Profile'), ('/myprofile/edit/', 'Edit Profile')]
+myprofile_links = [('/myprofile/', 'My Profile'), ('/myprofile/edit/', 'Edit Profile'), ('/my_items/', 'My Items')]
 user_links = []
 
 class user:
@@ -95,5 +95,15 @@ def handle_login_register(func):
 			curr_user = None
 		if curr_user and not curr_user.user_obj.is_active:
 			return render(args[0], 'error.html', {'error': 'You have been deactivated, contact the admin!'})
+		return func(*args, curr_user=curr_user)
+	return handle
+
+def handle_optional_login(func):
+	def handle(*args):
+		user_g = users.get_current_user()
+		if user_g:
+			curr_user = user(email=user_g.email())
+		else:
+			curr_user = None
 		return func(*args, curr_user=curr_user)
 	return handle
