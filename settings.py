@@ -13,6 +13,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'userTools',
     'itemTools',
+    'searchTools',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -29,6 +30,23 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),
     os.path.join(os.path.dirname(__file__), 'userTools/templates'),
     os.path.join(os.path.dirname(__file__), 'itemTools/templates'),
+    os.path.join(os.path.dirname(__file__), 'searchTools/templates'),
+)
+try:
+    import dbindexer
+    DATABASES['native'] = DATABASES['default']
+    DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
+    INSTALLED_APPS += ('autoload', 'dbindexer',)
+    AUTOLOAD_SITECONF = 'dbindexes'
+    MIDDLEWARE_CLASSES = ('autoload.middleware.AutoloadMiddleware',) + \
+                         MIDDLEWARE_CLASSES
+except ImportError:
+    pass
+
+DBINDEXER_BACKENDS = ('dbindexer.backends.BaseResolver',
+                      'dbindexer.backends.FKNullFix',
+                      'dbindexer.backends.InMemoryJOINResolver',
+#                      'dbindexer.backends.ConstantFieldJOINResolver',
 )
 
 ROOT_URLCONF = 'urls'

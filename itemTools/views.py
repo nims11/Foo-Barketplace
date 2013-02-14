@@ -3,9 +3,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from models import items
 from forms import SellForm, DelForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import datetime
 
-expiry = datetime.timedelta(days=2)
+expiry = datetime.timedelta(days=10)
+item_per_page = 3
 @handle_login_register
 def sell(request, curr_user):
 	"""
@@ -13,40 +15,34 @@ def sell(request, curr_user):
 	"""
 	if curr_user == None:
 		return render(request, 'error.html', {'error': 'Auth Failed!'})
+
 	if request.method == 'POST':
+		# Process the form
 		form = SellForm(request.POST, instance=items(user=curr_user.user_obj))
 		if form.is_valid():
-			form.save()
-			return render(request, 'msg.html', {'msg': 'Item Posted'})
+			new_item = form.save()
+			# Redirect to the new item page
+			return HttpResponseRedirect('/item/?id=%d' % new_item.id)
 		else:
 			return render(request, 'sell.html', {'form': form})
 	else:
+		# Display the Form
 		return render(request, 'sell.html', {'form': SellForm()})
 
 def buy(request):
-	item_per_page = 10
 	expiry_date = datetime.date.today()-expiry
-	if request.method == 'GET':
-		try:
-			page_no = int(request.GET.get('page_no', 1))
-		except:
-			page_no = 1
-	else:
-		page_no = 1
-
+	# Get the Page number
+	page_no = request.GET.get('page_no', 1)
 	# ret is the items list to return
-	# reversal of the list so that the latest creates item is at begin
-	ret = items.objects.filter(time_create__gte=expiry_date)[(page_no-1)*item_per_page:(page_no-1)*item_per_page+item_per_page]
-	total = len(items.objects.filter(time_create__gte=expiry_date))
-	pages = total/item_per_page
-	if total%item_per_page != 0:
-		pages += 1
-	return render(request, 'buy.html', {'items': ret, 'title': 'Buy', 
-		'page_no': page_no, 
-		'pages': pages,
-		'pre_page': page_no-1,
-		'nxt_page': page_no+1},
-		)
+	paginator = Paginator(items.objects.filter(time_create__gte=expiry_date), item_per_page)
+	try:
+		ret = paginator.page(page_no)
+	except PageNotAnInteger:
+		ret = paginator.page(1)
+	except EmptyPage:
+		ret = paginator.page(1)
+
+	return render(request, 'buy.html', {'items': ret, 'title': 'Buy'})
 
 @handle_optional_login
 def item_view(request, curr_user):
@@ -58,6 +54,8 @@ def item_view(request, curr_user):
 	else:
 		item_no = -1
 
+	if item_no<=0:
+		return render(request, 'error.html', {'error': 'Item Not Found'})
 	expiry_date = datetime.date.today()-expiry
 	try:
 		curr_item = items.objects.get(id=item_no)
@@ -78,14 +76,18 @@ def item_view(request, curr_user):
 def item_delete(request, item_id, curr_user):
 	if curr_user == None:
 		return render(request, 'error.html', {'error': 'Auth Failed!'})
+
 	item_id = int(item_id)
 	try:
 		item = items.objects.get(id=item_id)
 	except items.DoesNotExist:
 		return render(request, 'error.html', {'error': 'Item Does Not Exist or You don\'t have permission to be here!'})
+
+	# if the curr_user has no rights
 	if curr_user.user_obj != item.user and not curr_user.is_admin:
 		return render(request, 'error.html', {'error': 'Item Does Not Exist or You don\'t have permission to be here!'})
 
+	# User has rights, Perform Delete operations
 	if request.method == 'POST':
 		form = DelForm(request.POST)
 		if form.is_valid() and form.cleaned_data['confirm']:
@@ -100,6 +102,7 @@ def item_delete(request, item_id, curr_user):
 def item_edit(request, item_id, curr_user):
 	if curr_user == None:
 		return render(request, 'error.html', {'error': 'Auth Failed!'})
+
 	item_id = int(item_id)
 	try:
 		item = items.objects.get(id=item_id)
@@ -108,6 +111,7 @@ def item_edit(request, item_id, curr_user):
 	if curr_user.user_obj != item.user:
 		return render(request, 'error.html', {'error': 'Item Does Not Exist or You don\'t have permission to be here!'})
 
+	# User has rights, start the Edit Procedure
 	if request.method == 'POST':
 		form = SellForm(request.POST, instance=item)
 		if form.is_valid():
@@ -122,6 +126,7 @@ def item_edit(request, item_id, curr_user):
 def my_items(request, curr_user):
 	if curr_user == None:
 		return render(request, 'error.html', {'error': 'Auth Failed!'})
+
 	item_per_page = 10
 	expiry_date = datetime.date.today()-expiry
 	if request.method == 'GET':
@@ -133,7 +138,6 @@ def my_items(request, curr_user):
 		page_no = 1
 
 	# ret is the items list to return
-	# reversal of the list so that the latest creates item is at begin
 	ret = items.objects.filter(user=curr_user.user_obj)[(page_no-1)*item_per_page:(page_no-1)*item_per_page+item_per_page]
 	total = len(items.objects.filter(user=curr_user.user_obj))
 	pages = total/item_per_page

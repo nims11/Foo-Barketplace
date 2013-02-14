@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 import views
 import userTools.views
 import itemTools.views
+import searchTools.views
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -24,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^item/(\d+)/delete/$', itemTools.views.item_delete),
     url(r'^item/(\d+)/edit/$', itemTools.views.item_edit),
     url(r'^my_items/$', itemTools.views.my_items),
+    url(r'^search/$', searchTools.views.search_items),
     # url(r'^hackcode13/', include('hackcode13.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

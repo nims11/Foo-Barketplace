@@ -5,6 +5,7 @@ from google.appengine.api import users
 from django.shortcuts import render
 from forms import ProfileForm, DelForm, AddAdminForm
 from models import user_profile, admins
+from itemTools.models import items
 
 @handle_login_register
 def user_info(request, curr_user):
@@ -49,6 +50,12 @@ def del_profile(request, curr_user):
 		form = DelForm(request.POST)
 		if form.is_valid():
 			if form.cleaned_data['confirm']:
+				items.objects.filter(user=curr_user.user_obj).delete()
+				try:
+					tmp = admins.objects.get(email=curr_user.user_obj.email)
+					tmp.delete()
+				except admins.DoesNotExist:
+					pass
 				curr_user.user_obj.delete()
 				return HttpResponseRedirect(users.create_logout_url('/'))
 			else:

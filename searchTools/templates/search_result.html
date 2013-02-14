@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | {{ app_name }}{% endblock %}
+
+{% block head %}
+<link href='/static/css/buy.css' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block content %}
+
+<h1>Search Results for '{{ term }}'</h1>
+<center>
+<nav class='page_nav'>
+	<a href='/buy/'>&lt;&lt;</a> 
+	{% if pre_page > 0 %}
+	<a href='/buy/?page_no={{ pre_page }}'>{{ pre_page }}</a> 
+	{% endif %}
+	<a>{{ page_no }}</a>
+	{% if nxt_page <= pages %}
+	<a href='/buy/?page_no={{ nxt_page }}'>{{ nxt_page }}</a> 
+	{% endif %}
+	<a href='/buy/?page_no={{ pages }}'>&gt;&gt;</a> 
+</nav>
+</center>
+<table id='item_table'>
+	<tr class='blank'>
+		<td colspan=2></td>
+	</tr>
+	{% for item in items %}
+	<tr class='first'>
+		<td><a href='{{ item.get_url }}'>{{ item.title }}</a></td>
+		<td><i>by <a href='{{ item.user.get_url }}'>{{ item.user.nick }}</a></i></td>
+	</tr>
+	<tr class='second'>
+		<td>{{ item.descrip }}</td>
+		<td><b>Price</b>: {{ item.price }}</td>
+	</tr>
+	<tr class='blank'>
+		<td colspan=2></td>
+	</tr>
+	{% endfor %}
+</table>
+<center>
+<nav class='page_nav'>
+	<a href='/buy/'>&lt;&lt;</a> 
+	{% if pre_page > 0 %}
+	<a href='/buy/?page_no={{ pre_page }}'>{{ pre_page }}</a> 
+	{% endif %}
+	<a>{{ page_no }}</a>
+	{% if nxt_page <= pages %}
+	<a href='/buy/?page_no={{ nxt_page }}'>{{ nxt_page }}</a> 
+	{% endif %}
+	<a href='/buy/?page_no={{ pages }}'>&gt;&gt;</a> 
+</nav>
+</center>
+{% endblock %}
+
+
+

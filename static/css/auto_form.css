@@ -1,0 +1,7 @@
+#form_wrapper th{
+	text-align: left;
+}
+#form_wrapper tr th, td{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
