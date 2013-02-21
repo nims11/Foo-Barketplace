@@ -1,7 +1,7 @@
 from djangoappengine.settings_base import *
 
 import os
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 SECRET_KEY = '=r-$bi9LA73jc58&9003mmk5ch1k-3d3vfc4(wk0rn3wa1dhvi'
 
