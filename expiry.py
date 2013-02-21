@@ -6,12 +6,6 @@ import datetime
 
 def chk_exp(request):
 	expiry_date = datetime.date.today()-expiry
-	foo = items.objects.all()
-	for i in foo:
-		if i.is_sold == False and i.time_create.date()<expiry_date:
-			i.is_expired = True
-		else:
-			i.is_expired = False
-		i.save()
+	items.objects.filter(time_create__lt=expiry_date, is_expired=False).update(is_expired=True)
 	logging.info('Cron: Expiry Check Done!')
 	return HttpResponse('Done!')

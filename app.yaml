@@ -1,4 +1,4 @@
-application: sigfxfx
+application: foo-barketplace
 version: 1
 runtime: python27
 api_version: 1
@@ -22,6 +22,19 @@ handlers:
 
 - url: /.*
   script: djangoappengine.main.application
+
+- url: /myprofile/.+
   secure: always
+  script: djangoappengine.main.application
 
+- url: /admin/.*
+  secure: always
+  script: djangoappengine.main.application
 
+- url: /sell/.+
+  secure: always
+  script: djangoappengine.main.application
+
+- url: /item/\d+/.*
+  secure: always
+  script: djangoappengine.main.application

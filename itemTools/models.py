@@ -32,6 +32,9 @@ class items(models.Model):
 	def get_date(self):
 		return str(self.time_create)
 
+	def save2(self, *args, **kwargs):
+		super(items, self).save(*args, **kwargs)
+
 	def save(self, *args, **kwargs):
 		self.title_join_descrip = self.title + self.descrip
 		if self.id != None:

@@ -18,6 +18,9 @@ class user_profile(models.Model):
 	def get_url(self):
 		return '/user/%s/' % self.nick
 
+	def save2(self, *args, **kwargs):
+		super(user_profile, self).save(*args, **kwargs)
+
 	def save(self, *args, **kwargs):
 		if user_profile.objects.filter(nick=self.nick).exists():
 			new = False

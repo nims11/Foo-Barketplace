@@ -33,7 +33,7 @@ def common_proc(request):
 	}
 
 def home(request):
-	return render(request, 'base.html')
+	return render(request, 'home.html')
 
 def reset(request):
 	from itemTools.models import items
@@ -61,22 +61,22 @@ def reset(request):
 			l_name="Dylan%d"%i, 
 			email="foo%d@bar.com"%i, 
 			email_visibility=True, 
-			about_me="abcd efgh ijkl mnop").save()
+			about_me="abcd efgh ijkl mnop").save2()
 	ret += "25 Dummy Accounts Created<br />"
 
 	cnt = 1
 	from random import randint
 	for user in user_profile.objects.all():
-		for i in range(6):
+		for i in range(10):
 			items(
 				user=user,
 				title="item%d"%cnt,
 				descrip="Awesome Item with %d blessings"%cnt,
 				price=randint(1,1000000),
-				).save()
+				).save2()
 			cnt+=1
 
-	ret += "150 Dummy Items Created<br />"
+	ret += "250 Dummy Items Created<br />"
 	admins(email="hardcodetest1@gmail.com").save()
 	admins(email="hardcodetest2@gmail.com").save()
 	ret += "\"hardcodetest2@gmail.com\" and \"hardcodetest2@gmail.com\" Given Admin Rights<br />"
