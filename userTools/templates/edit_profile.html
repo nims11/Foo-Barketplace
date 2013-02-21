@@ -1,9 +1,9 @@
 {% extends "panel_base.html" %}
 
 {% block title %}Edit Profile | {{ app_name }}{% endblock %}
-{% block heading %}Edit Profile{% endblock %}
-
-{% block profile_content %}
+{% block css %}<link href='/static/css/profile.css' rel='stylesheet' type='text/css' />{% endblock %}
+{% block right_content %}
+	<h1>Edit Profile</h1>
 	{% if saved %}
 	<p style="color: blue;">
 		Changes Saved.

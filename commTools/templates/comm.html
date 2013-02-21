@@ -1,0 +1,66 @@
+{% extends "item.html" %}
+
+{% block title %}Deal - {{ item.title }} | {{ app_name }}{% endblock %}
+
+
+{% block right_content %}
+<h2>Communication with 
+{% if role == "buyer" %}
+Seller {{ comm.item.user.nick }}
+{% else %}
+Buyer {{ comm.buyer.nick }}
+{% endif %}
+
+ - {{ item.title }}</h2>
+	{% if form.errors %}
+	    <p style="color: red;">
+	        Please correct the error{{ form.errors|pluralize }} below.
+	    </p>
+	{% endif %}
+
+	<form action="" method="post">
+		<table>
+		    {{ form.as_table }}
+		    <tr><td colspan=2 style="text-align: right;"><input type="submit" value="Submit"></td></tr>
+		</table>
+	</form>
+	{% if role == 'buyer' %}
+		{% if comm.status == 0 %}
+		<form action='/item/{{ comm.item.id }}/seal/' method="post">
+			{{ DealForm.as_p }}
+			<tr><td><input type="submit" value="Confirm Deal"></td></tr>
+		</form>
+		{% endif %}
+		{% if comm.status == 1 %}
+		<p>Waiting for confirmation...</p>
+		<form action='/item/{{ comm.item.id }}/cancel/' method="post">
+			{{ CancelForm.as_p }}
+			<tr><td><input type="submit" value="Confirm"></td></tr>
+		</form>
+		{% endif %}
+		{% if comm.status == 2 %}
+		<p>Deal Done!!!</p>
+		{% endif %}
+		
+	{% endif %}
+
+	{% if role == 'seller' %}
+		{% if comm.status == 1 and not item.is_sold %}
+		<form action='/item/{{ comm.item.id }}/comm/{{ comm.buyer.nick }}/seal/' method="post">
+			{{ DealForm.as_p }}
+			<tr><td><input type="submit" value="Confirm Deal"></td></tr>
+		</form>
+		{% endif %}
+		{% if comm.status == 2 %}
+		<p>Deal Done!!!</p>
+		{% endif %}
+	{% endif %}
+
+
+	{% for msg in msgs %}
+	<p>
+	<i>{{ msg.time }}</i> by <i><a href='{{ msg.user.get_url }}'>{{ msg.user.nick }}</a></i><br />
+	{{ msg.content }}
+	</p>
+	{% endfor %}
+{% endblock %}

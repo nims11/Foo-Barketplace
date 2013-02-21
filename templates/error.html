@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}My Profile | {{ app_name }}{% endblock %}
+{% block title %}Error | {{ app_name }}{% endblock %}
 
 {% block head %}
 <link href='/static/css/profile.css' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 {% block content %}
-{{ error }}
+<br />
+<h1 style='color: red'>{{ error }}</h1>
+<br />
 {% endblock %}

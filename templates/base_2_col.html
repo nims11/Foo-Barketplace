@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block head %}
+<link href='/static/css/base_2_col.css' rel='stylesheet' type='text/css'>
+	{% block css %}
+	{% endblock %}
+{% endblock %}
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<div class="colmask leftmenu">
+	<div class="colleft">
+		<div class="col1">
+			{% block right_content %}
+			{% endblock %}
+		</div>
+		<div class="col2">
+			{% block left_content %}
+			{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}

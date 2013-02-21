@@ -1,0 +1,4 @@
+cron:
+- description: expiry check
+  url: /tasks/expiry
+  schedule: every 2 hours

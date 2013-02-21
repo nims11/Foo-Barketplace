@@ -1,0 +1,22 @@
+
+{% extends "item.html" %}
+
+{% block title %}Interested Buyers - {{ item.title }} | {{ app_name }}{% endblock %}
+
+
+{% block right_content %}
+<h1>{{ item.title }} 
+	{% if item.expired %}
+	<font style='color: red'>(Expired)</font>
+	{% else %}
+	{% if item.is_sold %}
+	<font style='color: blue'>(Sold to <a href='{{ item.buyer.get_url }}'>{{ item.buyer.nick }}</a>)</font>
+	{% endif %}
+	{% endif %}
+</h1>
+{% for comm in comms %}
+<p>
+	<a href='/item/{{ comm.item.id }}/comm/{{ comm.buyer.nick }}/'>{{ comm.buyer.nick }}</a>
+</p>
+{% endfor %}
+{% endblock %}

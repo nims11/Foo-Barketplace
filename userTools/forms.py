@@ -31,6 +31,9 @@ class NickForm(forms.Form):
 class DelForm(forms.Form):
 	confirm = forms.BooleanField(label='Confirm Account Deletion?')
 
+class ConfirmForm(forms.Form):
+	confirm = forms.BooleanField(label='Confirm?')
+
 class AddAdminForm(forms.Form):
 	email = forms.EmailField(label='Email of the existing user to give admins rights to')
 	def clean_email(self):

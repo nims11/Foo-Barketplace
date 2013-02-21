@@ -36,12 +36,14 @@
 	</tr>
 	{% for item in items.object_list %}
 	<tr class='first'>
-		<td><a href='{{ item.get_url }}'>{{ item.title }}</a> {% if item.is_expired %}<font style='color:red;'><i>Expired</i></font>{% endif %}</td>
-		<td><i>by <a href='{{ item.user.get_url }}'>{{ item.user.nick }}</a></i></td>
+		<td><a href='{% if item.item.is_sold %}{{ item.get_url }}{% endif %}'>{{ item.item.title }}</a>
+			{% if item.item.is_sold %}<font style='color: red'>(Sold to Another user)</font>{% endif %}
+		</td>
+		<td><i>by <a href='{{ item.item.user.get_url }}'>{{ item.item.user.nick }}</a></i></td>
 	</tr>
 	<tr class='second'>
-		<td>{{ item.descrip }}</td>
-		<td><b>Price</b>: {{ item.price }}</td>
+		<td>{{ item.item.descrip }}</td>
+		<td><b>Price</b>: {{ item.item.price }}</td>
 	</tr>
 	<tr class='blank'>
 		<td colspan=2></td>

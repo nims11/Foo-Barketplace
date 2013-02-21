@@ -10,6 +10,65 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: commTools_messages
+  properties:
+  - name: comm_id
+  - name: time
+    direction: desc
+
+- kind: itemTools_items
+  properties:
+  - name: buyer_id
+  - name: is_sold
+  - name: time_create
+    direction: desc
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: idxf_title_join_descrip_l_icontains
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: idxf_title_l_icontains
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: is_sold
+  - name: idxf_title_l_icontains
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: is_sold
+  - name: time_create
+    direction: desc
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: time_create
+
+- kind: itemTools_items
+  properties:
+  - name: is_expired
+  - name: time_create
+    direction: desc
+
+- kind: itemTools_items
+  properties:
+  - name: is_sold
+  - name: user_id
+  - name: time_create
+    direction: desc
+
+- kind: itemTools_items
+  properties:
+  - name: user_id
+  - name: time_create
+
 - kind: itemTools_items
   properties:
   - name: user_id

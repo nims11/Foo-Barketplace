@@ -3,11 +3,14 @@ from google.appengine.api import users
 from django.shortcuts import render
 from forms import NickForm
 
-myprofile_links = [('/myprofile/', 'My Profile'), ('/myprofile/edit/', 'Edit Profile'), ('/my_items/', 'My Items')]
+myprofile_links = [('/myprofile/', 'My Profile'), ('/myprofile/edit/', 'Edit Profile'), ('/my_items/', 'My Items'), ('/my_buys/', 'My Purchases'), ('/my_sells/', 'My Sold Items'), ('/ongoing_deals/', 'Ongoing Purchases')]
 user_links = []
 
 class user:
+	"Abstraction to handle user_profile models"
+
 	def add_user(self, obj):
+		"Add the current user instance to the database"
 		self.registered = True
 		self.is_active = True
 		self.user_obj = obj
@@ -19,6 +22,7 @@ class user:
 			self.is_admin = False
 
 	def get_info(self):
+		"Get list of info for the current user"
 		ret = []
 		ret.append(('Nick', self.user_obj.nick))
 		if self.user_obj.f_name or self.user_obj.l_name:
@@ -30,6 +34,8 @@ class user:
 		return ret
 
 	def __init__(self, nick=None, user_id=None, email = None):
+		"Initialises with any one of the argument"
+
 		self.registered = False
 		self.user_obj = None
 		self.is_active = False
@@ -76,6 +82,11 @@ class user:
 
 
 def handle_login_register(func):
+	"""
+	Passes the function the current users instance.
+	If the user is new, asks him to register when accessing any restricted page.
+	If no user logged in, shows an error
+	"""
 	def handle(*args):
 		user_g = users.get_current_user()
 		if user_g:
@@ -93,12 +104,19 @@ def handle_login_register(func):
 					return render(args[0], 'register.html', {'form': NickForm()})
 		else:
 			curr_user = None
+
+		if curr_user == None:
+			return render(args[0], 'error.html', {'error': 'Auth Failed!'})
+			
 		if curr_user and not curr_user.user_obj.is_active:
 			return render(args[0], 'error.html', {'error': 'You have been deactivated, contact the admin!'})
 		return func(*args, curr_user=curr_user)
 	return handle
 
 def handle_optional_login(func):
+	"""
+	Doesn't show error if no user logged in
+	"""
 	def handle(*args):
 		user_g = users.get_current_user()
 		if user_g:

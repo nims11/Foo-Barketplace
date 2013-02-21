@@ -7,7 +7,7 @@
 	{% block script %}{% endblock %}
 </head>
 <body>
-<div id='viewarea'>
+<div id='viewarea' style="overflow: auto;">
 	<div id='userarea'>
 		{% if user_nick %}
 		Welcome {{ user_nick }}! (<a href='/myprofile/'>My Profile</a> |{% if user_reg.is_admin %} <a href='/admin/'>Admin Panel</a> |{% endif %} <a href='{{ app_logout_URL }}'>Sign Out</a> {% if not user_reg.is_active %} | <font style='color: red'> Your account is currently disabled, visit 'My Profile' for furthur details</font>{% endif %})
@@ -27,10 +27,15 @@
 			<a href='/'>Home</a> |
 			<a href='/buy/'>Browse</a> |
 			<a href='/sell/'>Sell</a> |
-			<a href='/feedback'>Feedback</a>
+			<a href='/search/'>Search</a>
 		</nav>
-		<form name='Search' id='searcharea'>
-			<input type='text' placeholder='Enter Item To Search' />
+		<form name='Search' id='searcharea' action='/search_handle/' method='get'>
+			<input type='text' name='term' placeholder='Enter Search Term' />
+			<select name="field">
+				<option value="item">Search Items</option>
+		   	   	<option value="user">Search Users</option>
+			</select>
+			<input type='submit' />
 		</form>
 		<div class='cleardiv'></div>
 	</div>

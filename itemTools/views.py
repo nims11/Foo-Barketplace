@@ -4,20 +4,15 @@ from django.shortcuts import render
 from models import items
 from forms import SellForm, DelForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from commTools.models import Comm
 import datetime
 
-expiry = datetime.timedelta(days=10)
-item_per_page = 3
+expiry = datetime.timedelta(days=30)
+item_per_page = 6
 @handle_login_register
 def sell(request, curr_user):
-	"""
-	TODO: if success, redirects to that item page
-	"""
-	if curr_user == None:
-		return render(request, 'error.html', {'error': 'Auth Failed!'})
-
+	"Sell Page"
 	if request.method == 'POST':
-		# Process the form
 		form = SellForm(request.POST, instance=items(user=curr_user.user_obj))
 		if form.is_valid():
 			new_item = form.save()
@@ -30,11 +25,10 @@ def sell(request, curr_user):
 		return render(request, 'sell.html', {'form': SellForm()})
 
 def buy(request):
-	expiry_date = datetime.date.today()-expiry
-	# Get the Page number
+	"Browse Page"
+	# expiry_date = datetime.date.today()-expiry
 	page_no = request.GET.get('page_no', 1)
-	# ret is the items list to return
-	paginator = Paginator(items.objects.filter(time_create__gte=expiry_date), item_per_page)
+	paginator = Paginator(items.objects.filter(is_expired=False, is_sold=False), item_per_page)
 	try:
 		ret = paginator.page(page_no)
 	except PageNotAnInteger:
@@ -42,10 +36,11 @@ def buy(request):
 	except EmptyPage:
 		ret = paginator.page(1)
 
-	return render(request, 'buy.html', {'items': ret, 'title': 'Buy'})
+	return render(request, 'buy.html', {'items': ret, 'title': 'Buy', 'num_pages': paginator.num_pages})
 
 @handle_optional_login
 def item_view(request, curr_user):
+	"Individual Item View"
 	if request.method == 'GET':
 		try:
 			item_no = int(request.GET.get('id', -1))
@@ -56,12 +51,15 @@ def item_view(request, curr_user):
 
 	if item_no<=0:
 		return render(request, 'error.html', {'error': 'Item Not Found'})
-	expiry_date = datetime.date.today()-expiry
+	# expiry_date = datetime.date.today()-expiry
 	try:
 		curr_item = items.objects.get(id=item_no)
 
 		# if item is not expired
-		if curr_item.time_create.date() >= expiry_date:
+		if not curr_item.is_expired and not curr_item.is_sold:
+			return render(request, 'item.html', {'item': curr_item})
+
+		if curr_item.is_sold and (curr_item.user == curr_user.user_obj or curr_item.buyer == curr_user.user_obj):
 			return render(request, 'item.html', {'item': curr_item})
 
 		# if the curr_user has rights to see this expired item
@@ -74,12 +72,10 @@ def item_view(request, curr_user):
 
 @handle_login_register
 def item_delete(request, item_id, curr_user):
-	if curr_user == None:
-		return render(request, 'error.html', {'error': 'Auth Failed!'})
-
+	"Delete Item (item_id)"
 	item_id = int(item_id)
 	try:
-		item = items.objects.get(id=item_id)
+		item = items.objects.get(id=item_id, is_sold=False)
 	except items.DoesNotExist:
 		return render(request, 'error.html', {'error': 'Item Does Not Exist or You don\'t have permission to be here!'})
 
@@ -100,12 +96,10 @@ def item_delete(request, item_id, curr_user):
 
 @handle_login_register
 def item_edit(request, item_id, curr_user):
-	if curr_user == None:
-		return render(request, 'error.html', {'error': 'Auth Failed!'})
-
+	"Edit Item item_id"
 	item_id = int(item_id)
 	try:
-		item = items.objects.get(id=item_id)
+		item = items.objects.get(id=item_id, is_sold=False)
 	except items.DoesNotExist:
 		return render(request, 'error.html', {'error': 'Item Does Not Exist or You don\'t have permission to be here!'})
 	if curr_user.user_obj != item.user:
@@ -124,32 +118,54 @@ def item_edit(request, item_id, curr_user):
 
 @handle_login_register
 def my_items(request, curr_user):
-	if curr_user == None:
-		return render(request, 'error.html', {'error': 'Auth Failed!'})
+	"View for all items of a user"
+	page_no = request.GET.get('page_no', 1)
+	paginator = Paginator(items.objects.filter(user=curr_user.user_obj, is_sold=False), item_per_page)
+	try:
+		ret = paginator.page(page_no)
+	except PageNotAnInteger:
+		ret = paginator.page(1)
+	except EmptyPage:
+		ret = paginator.page(1)
 
-	item_per_page = 10
-	expiry_date = datetime.date.today()-expiry
-	if request.method == 'GET':
-		try:
-			page_no = int(request.GET.get('page_no', 1))
-		except:
-			page_no = 1
-	else:
-		page_no = 1
+	return render(request, 'my_items.html', {'items': ret, 'title': 'My Items', 'num_pages': paginator.num_pages})
 
-	# ret is the items list to return
-	ret = items.objects.filter(user=curr_user.user_obj)[(page_no-1)*item_per_page:(page_no-1)*item_per_page+item_per_page]
-	total = len(items.objects.filter(user=curr_user.user_obj))
-	pages = total/item_per_page
-	if total%item_per_page != 0:
-		pages += 1
-	return render(request, 'my_items.html', {'items': ret, 'title': 'My items', 
-		'page_no': page_no, 
-		'pages': pages,
-		'pre_page': page_no-1,
-		'nxt_page': page_no+1,
-		'expiry': expiry_date,
-		'links': myprofile_links,
-		},
-		)
 
+@handle_login_register
+def my_items_buys(request, curr_user):
+	page_no = request.GET.get('page_no', 1)
+	paginator = Paginator(items.objects.filter(is_sold=True, buyer=curr_user.user_obj), item_per_page)
+	try:
+		ret = paginator.page(page_no)
+	except PageNotAnInteger:
+		ret = paginator.page(1)
+	except EmptyPage:
+		ret = paginator.page(1)
+	return render(request, 'my_items.html', {'items': ret, 'title': 'My Purchases', 'num_pages': paginator.num_pages})
+
+@handle_login_register
+def my_items_sold(request, curr_user):
+	page_no = request.GET.get('page_no', 1)
+	paginator = Paginator(items.objects.filter(is_sold=True, user=curr_user.user_obj), item_per_page)
+	try:
+		ret = paginator.page(page_no)
+	except PageNotAnInteger:
+		ret = paginator.page(1)
+	except EmptyPage:
+		ret = paginator.page(1)
+	return render(request, 'my_items.html', {'items': ret, 'title': 'My Sells', 'num_pages': paginator.num_pages})
+
+@handle_login_register
+def ongoing_deals(request, curr_user):
+	page_no = request.GET.get('page_no', 1)
+	from itertools  import chain
+	res1 = Comm.objects.filter(status=0, buyer=curr_user.user_obj)
+	res2 = Comm.objects.filter(status=1, buyer=curr_user.user_obj)
+	paginator = Paginator(list(chain(res1, res2)), item_per_page)
+	try:
+		ret = paginator.page(page_no)
+	except PageNotAnInteger:
+		ret = paginator.page(1)
+	except EmptyPage:
+		ret = paginator.page(1)
+	return render(request, 'ongoing.html', {'items': ret, 'title': 'Ongoing Deals', 'num_pages': paginator.num_pages})

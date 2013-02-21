@@ -26,7 +26,7 @@
 	{% endif %}
 
 	{% if items.number != items.paginator.num_pages and  items.paginator.num_pages != items.next_page_number %}
-		<a href='/buy/?page_no={{ items.num_pages }}'>{{ items.paginator.num_pages }}</a> 
+		<a href='/buy/?page_no={{ num_pages }}'>{{ items.paginator.num_pages }}</a> 
 	{% endif %}
 </nav>
 </center>
@@ -65,7 +65,7 @@
 	{% endif %}
 
 	{% if items.number != items.paginator.num_pages and  items.paginator.num_pages != items.next_page_number %}
-		<a href='/buy/?page_no={{ items.num_pages }}'>{{ items.paginator.num_pages }}</a> 
+		<a href='/buy/?page_no={{ num_pages }}'>{{ items.paginator.num_pages }}</a> 
 	{% endif %}
 </nav>
 </center>

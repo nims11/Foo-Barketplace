@@ -7,7 +7,7 @@ from userTools.main import user
 def common_proc(request):
 	"""
 	Provides common details
-	TODO: After proper Auth Failed implementation, correct app_login_URL arguments
+	TODO: Handle redirection to critical pages
 	"""
 	user_g = users.get_current_user()
 	user_reg = None
@@ -34,3 +34,50 @@ def common_proc(request):
 
 def home(request):
 	return render(request, 'base.html')
+
+def reset(request):
+	from itemTools.models import items
+	from userTools.models import user_profile, admins
+	from commTools.models import Comm, Messages
+	ret = ''
+	for i in Messages.objects.all():
+		i.delete()
+	for i in Comm.objects.all():
+		i.delete()
+	for i in items.objects.all():
+		i.delete()
+	for i in user_profile.objects.all():
+		i.delete()
+	for i in admins.objects.all():
+		i.delete()
+
+	ret += "Previous Records Deleted!<br />"
+
+	for i in range(1,26):
+		user_profile(
+			google_user_id=-1, 
+			nick="test%d"%i, 
+			f_name="Bob%d"%i, 
+			l_name="Dylan%d"%i, 
+			email="foo%d@bar.com"%i, 
+			email_visibility=True, 
+			about_me="abcd efgh ijkl mnop").save()
+	ret += "25 Dummy Accounts Created<br />"
+
+	cnt = 1
+	from random import randint
+	for user in user_profile.objects.all():
+		for i in range(6):
+			items(
+				user=user,
+				title="item%d"%cnt,
+				descrip="Awesome Item with %d blessings"%cnt,
+				price=randint(1,1000000),
+				).save()
+			cnt+=1
+
+	ret += "150 Dummy Items Created<br />"
+	admins(email="hardcodetest1@gmail.com").save()
+	admins(email="hardcodetest2@gmail.com").save()
+	ret += "\"hardcodetest2@gmail.com\" and \"hardcodetest2@gmail.com\" Given Admin Rights<br />"
+	return HttpResponse(ret)

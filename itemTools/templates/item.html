@@ -1,73 +1,77 @@
-{% extends "base.html" %}
+{% extends "base_2_col.html" %}
 
 {% block title %}{{ item.title }} | {{ app_name }}{% endblock %}
 
-{% block head %}
+{% block css %}
 <link href='/static/css/item.css' rel='stylesheet' type='text/css'>
 {% endblock %}
 
-{% block content %}
+{% block left_content %}
+<ul>
+	<li>
+		<a href='{{ item.get_url }}'>
+			Item info
+		</a>
+	</li>
+		{% if user_reg and user_reg.user_obj != item.user %}
+	<li>
+		<a href='{{ item.get_comm_url }}'>
+			Communicate with the Seller
+		</a>
+	</li>
+		{% endif %}
 
-<h1>{{ item.title }}</h1>
-{% if expired %}
-<p style='color: red;'>
-	This Item is Expired!
-</p>
-{% endif %}
-
-<div id='wrapper'>
-	<div id='left-div'>
-	<ul>
-			{% if user_reg and user_reg.user_obj != item.user %}
-		<li>
-			<a href='/buy/contact/{{ item.user.nick }}/{{ item.id }}/'>
-				Communicate with the Seller
-			</a>
-		</li>
-			{% endif %}
-
-			{% if user_reg and user_reg.user_obj == item.user %}
+		{% if user_reg and user_reg.user_obj == item.user %}
+		{% if not item.is_sold %}
 			<li>
 				<a href='/item/{{ item.id }}/edit/'>Edit Item</a>
 			</li>
 			<li>
 				<a href='/item/{{ item.id }}/delete/'>Delete Item</a>
 			</li>
-			{% else %}
-			{% if user_reg and user_reg.is_admin %}
-			<li>
-				<a href='/item/{{ item.id }}/delete/'>Delete Item</a>
-			</li>
-			{% endif %}
-			{% endif %}
-	</ul>
-	</div>
-	<div id='right-div'>
-		<table id='item_table'>
-			<tr>
-				<th>Item Description</th>
-				<td>{{ item.descrip }}</td>
-			</tr>
-			<tr>
-				<th>Posted by</th>
-				<td><a href='{{ item.user.get_url }}'>{{ item.user.nick }}</a></td>
-			</tr>
-			<tr>
-				<th>On</th>
-				<td>{{ item.time_create }}</td>
-			</tr>
-			<tr>
-				<th>Price</th>
-				<td>{{ item.price }}</td>
-			</tr>
-		</table>
-	</div>
-	<div style="clear: both;"></div>
-</div>
-
-
-
+		{% endif %}
+		<li>
+			<a href='{{ item.get_comm_url }}'>
+				Interested Buyers
+			</a>
+		</li>
+		{% else %}
+		{% if user_reg and user_reg.is_admin and not item.is_sold %}
+		<li>
+			<a href='/item/{{ item.id }}/delete/'>Delete Item</a>
+		</li>
+		{% endif %}
+		{% endif %}
+</ul>
 {% endblock %}
 
+{% block right_content %}
 
-
+<h1>{{ item.title }} 
+	{% if item.expired %}
+	<font style='color: red'>(Expired)</font>
+	{% else %}
+	{% if item.is_sold %}
+	<font style='color: blue'>(Sold to <a href='{{ item.buyer.get_url }}'>{{ item.buyer.nick }}</a>)</font>
+	{% endif %}
+	{% endif %}
+</h1>
+	<table id='item_table'>
+		<tr>
+			<th>Item Description</th>
+			<td>{{ item.descrip }}</td>
+		</tr>
+		<tr>
+			<th>Posted by</th>
+			<td><a href='{{ item.user.get_url }}'>{{ item.user.nick }}</a></td>
+		</tr>
+		<tr>
+			<th>On</th>
+			<td>{{ item.time_create }}</td>
+		</tr>
+		<tr>
+			<th>Price</th>
+			<td>{{ item.price }}</td>
+		</tr>
+	</table>
+{% endblock %}

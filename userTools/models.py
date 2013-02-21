@@ -1,6 +1,8 @@
 from django.db import models
+import logging
 
 class user_profile(models.Model):
+	
 	google_user_id = models.CharField(max_length=200, editable=False, unique=True)
 	f_name = models.CharField(max_length=30, null=True, blank=True, verbose_name='First Name')
 	l_name = models.CharField(max_length=30, null=True, blank=True, verbose_name='Last Name')
@@ -16,5 +18,31 @@ class user_profile(models.Model):
 	def get_url(self):
 		return '/user/%s/' % self.nick
 
+	def save(self, *args, **kwargs):
+		if user_profile.objects.filter(nick=self.nick).exists():
+			new = False
+		else:
+			new = True
+
+		super(user_profile, self).save(*args, **kwargs)
+		if new:
+			logging.info('user_profile: %s created' % self.nick)
+		else:
+			logging.info('user_profile: %s changed' % self.nick)
+
+	def delete(self, *args, **kwargs):
+		super(user_profile, self).delete(*args, **kwargs)
+		logging.info('user_profile: deleted %s' % self.nick)
+
+
+
 class admins(models.Model):
 	email = models.EmailField(editable=False, unique=True)
+
+	def save(self, *args, **kwargs):
+		super(admins, self).save(*args, **kwargs)
+		logging.info('admins: added %s' % self.email)
+
+	def delete(self, *args, **kwargs):
+		super(admins, self).delete(*args, **kwargs)
+		logging.info('admins: deleted %s' % self.email)

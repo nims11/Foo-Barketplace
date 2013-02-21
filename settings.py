@@ -8,12 +8,12 @@ SECRET_KEY = '=r-$bi9LA73jc58&9003mmk5ch1k-3d3vfc4(wk0rn3wa1dhvi'
 INSTALLED_APPS = (
     'djangoappengine',
     'djangotoolbox',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'userTools',
     'itemTools',
     'searchTools',
+    'commTools',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -31,6 +31,7 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),
     os.path.join(os.path.dirname(__file__), 'userTools/templates'),
     os.path.join(os.path.dirname(__file__), 'itemTools/templates'),
     os.path.join(os.path.dirname(__file__), 'searchTools/templates'),
+    os.path.join(os.path.dirname(__file__), 'commTools/templates'),
 )
 try:
     import dbindexer

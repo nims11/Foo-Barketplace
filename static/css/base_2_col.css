@@ -1,0 +1,30 @@
+.colmask {
+    clear: both;
+    float: left;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.colleft {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+.col1, .col2 {
+    float: left;
+    overflow: hidden;
+    padding: 0 0 1em;
+    position: relative;
+}
+.leftmenu .colleft {
+    right: 75%;
+}
+.leftmenu .col1 {
+    left: 102%;
+    width: 71%;
+}
+.leftmenu .col2 {
+    left: 6%;
+    width: 21%;
+}
