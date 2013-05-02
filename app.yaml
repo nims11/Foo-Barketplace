@@ -20,9 +20,6 @@ handlers:
 - url: /static
   static_dir: static
 
-- url: /.*
-  script: djangoappengine.main.application
-
 - url: /myprofile/.+
   secure: always
   script: djangoappengine.main.application
@@ -37,4 +34,7 @@ handlers:
 
 - url: /item/\d+/.*
   secure: always
+  script: djangoappengine.main.application
+
+- url: /.*
   script: djangoappengine.main.application
